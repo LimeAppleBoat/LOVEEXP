@@ -1,14 +1,16 @@
-package net.fabricmc.example;
+package com.jab125.limeappleboat.loveexp;
 
+import com.jab125.limeappleboat.loveexp.util.Util;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ExampleMod implements ModInitializer {
+public class LoveExp implements ModInitializer {
+	public static final String MODID = "loveexp";
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LogManager.getLogger("modid");
+	public static final Logger LOGGER = LogManager.getLogger(MODID);
 
 	@Override
 	public void onInitialize() {
@@ -17,5 +19,6 @@ public class ExampleMod implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+		Util.init();
 	}
 }
