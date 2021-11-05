@@ -69,19 +69,23 @@ public abstract class PlayerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "onKilledOther")
     private void injectToOnKilled(ServerWorld world, LivingEntity other, CallbackInfo ci) {
-        int expOnDeath;
+        int expOnDeath = 0;
         if (Util.REGISTERED_MOBS_AUTO_LV.containsKey(other.getType())) {
-            if (!(this.EXP > loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1())))
+            if (!(this.EXP > loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1()))) {
+                expOnDeath = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1()) - EXP;
                 this.EXP = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1());
-            expOnDeath = 0;
+            }
         } else if (Util.REGISTERED_MOBS_AUTO_EXP.containsKey(other.getType())) {
-            if (!(EXP > Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1()))
+            if (!(EXP > Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1())) {
+                expOnDeath = Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1() - EXP;
                 this.EXP = Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1();
-            expOnDeath = 0;
+            }
         } else if (Util.REGISTERED_MOBS.containsKey(other.getType()))
             expOnDeath = Util.REGISTERED_MOBS.get(other.getType()).getInt1();
         else expOnDeath = other.getXpToDrop(this.playerEntity);
-        this.EXP += expOnDeath;
+        if (!(Util.REGISTERED_MOBS_AUTO_LV.containsKey(other.getType()) || Util.REGISTERED_MOBS_AUTO_EXP.containsKey(other.getType()))) {
+            this.EXP += expOnDeath;
+        }
         this.EXP = MathHelper.clamp(this.EXP, 0, 99999);
         this.playerEntity.sendMessage(new LiteralText("YOU WON!"), false);
         this.playerEntity.sendMessage(new LiteralText("You earned " + expOnDeath + " XP and " + 0 + " gold."), false);
