@@ -11,6 +11,8 @@ import net.minecraft.server.command.DataCommand;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,8 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
 
-import static com.jab125.limeappleboat.loveexp.util.Util.expToLove;
-import static com.jab125.limeappleboat.loveexp.util.Util.loveToHP;
+import static com.jab125.limeappleboat.loveexp.util.Util.*;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
@@ -48,6 +49,8 @@ public abstract class PlayerEntityMixin {
             Util.setLV(LV, this.playerEntity.getUuid());
             Util.setEXP(EXP, this.playerEntity.getUuid());
         }
+        //Util.init();
+        //System.out.println(Util.expJSON);
     }
     @Inject(at = @At("HEAD"), method = "readCustomDataFromNbt")
     private void injectToReadNbt(NbtCompound nbt, CallbackInfo ci) {
@@ -66,17 +69,34 @@ public abstract class PlayerEntityMixin {
 
     @Inject(at = @At("HEAD"), method = "onKilledOther")
     private void injectToOnKilled(ServerWorld world, LivingEntity other, CallbackInfo ci) {
-        this.EXP += other.getXpToDrop(this.playerEntity);
-        if (expToLove(this.EXP) > this.LV) {
-            playSound(SoundEvents.BLOCK_GLASS_BREAK, 10, .1F);
-        }
+        int expOnDeath;
+        if (Util.REGISTERED_MOBS_AUTO_LV.containsKey(other.getType())) {
+            if (!(this.EXP > loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1())))
+                this.EXP = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1());
+            expOnDeath = 0;
+        } else if (Util.REGISTERED_MOBS_AUTO_EXP.containsKey(other.getType())) {
+            if (!(EXP > Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1()))
+                this.EXP = Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1();
+            expOnDeath = 0;
+        } else if (Util.REGISTERED_MOBS.containsKey(other.getType()))
+            expOnDeath = Util.REGISTERED_MOBS.get(other.getType()).getInt1();
+        else expOnDeath = other.getXpToDrop(this.playerEntity);
+        this.EXP += expOnDeath;
+        this.EXP = MathHelper.clamp(this.EXP, 0, 99999);
+        this.playerEntity.sendMessage(new LiteralText("YOU WON!"), false);
+        this.playerEntity.sendMessage(new LiteralText("You earned " + expOnDeath + " XP and " + 0 + " gold."), false);
+//        if (expToLove(this.EXP) > this.LV) {
+//            playSound(SoundEvents.BLOCK_GLASS_BREAK, 10, .1F);
+//        }
     }
     @Inject(at = @At("HEAD"), method = "wakeUp(ZZ)V")
     private void injectToWakeUp(boolean bl, boolean updateSleepingPlayers, CallbackInfo ci) {
-        if (this.LV < 6 && this.getAbsorptionAmount() < 10) {
-            this.setAbsorptionAmount(this.getAbsorptionAmount() + 10);
+        if (!this.playerEntity.world.isClient) {
+            if (this.LV < 6 && this.getAbsorptionAmount() < 10) {
+                this.setAbsorptionAmount(10);
+            }
+            this.playerEntity.setHealth(this.playerEntity.getMaxHealth());
         }
-        this.playerEntity.setHealth(this.playerEntity.getMaxHealth());
     }
 
     public int getLV() {

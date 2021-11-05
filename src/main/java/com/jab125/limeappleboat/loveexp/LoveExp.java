@@ -1,7 +1,11 @@
 package com.jab125.limeappleboat.loveexp;
 
+import com.jab125.limeappleboat.loveexp.api.LoveExpApi;
+import com.jab125.limeappleboat.loveexp.api.LoveExpApiRegistry;
 import com.jab125.limeappleboat.loveexp.util.Util;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.EntityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,8 +21,9 @@ public class LoveExp implements ModInitializer {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
-
-		LOGGER.info("Hello Fabric world!");
-		Util.init();
+		LOGGER.info("Hello Fabric world!");;
+		FabricLoader.getInstance().getEntrypointContainers("loveexp", LoveExpApi.class).forEach(entrypoint -> {
+			entrypoint.getEntrypoint().register();
+		});
 	}
 }
