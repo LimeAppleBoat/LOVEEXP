@@ -5,7 +5,9 @@ import com.jab125.limeappleboat.loveexp.api.LoveExpApiRegistry;
 import com.jab125.limeappleboat.loveexp.util.Util;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityType;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,5 +27,6 @@ public class LoveExp implements ModInitializer {
 		FabricLoader.getInstance().getEntrypointContainers("loveexp", LoveExpApi.class).forEach(entrypoint -> {
 			entrypoint.getEntrypoint().register();
 		});
+		Util.loadMobs(FabricLoader.getInstance().getConfigDir().toFile());
 	}
 }

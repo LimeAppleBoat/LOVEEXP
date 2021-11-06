@@ -1,16 +1,13 @@
 package com.jab125.limeappleboat.loveexp.mixin;
 
 import com.jab125.limeappleboat.loveexp.util.Util;
-import net.minecraft.command.DataCommandObject;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.command.DataCommand;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,6 +30,8 @@ public abstract class PlayerEntityMixin {
     PlayerEntity playerEntity;
     private int LV;
     private int EXP;
+    private int AT;
+    private int DF;
     private int DISLV = 1;
     private int DISEXP = 0;
 
@@ -70,20 +69,21 @@ public abstract class PlayerEntityMixin {
     @Inject(at = @At("HEAD"), method = "onKilledOther")
     private void injectToOnKilled(ServerWorld world, LivingEntity other, CallbackInfo ci) {
         int expOnDeath = 0;
-        if (Util.REGISTERED_MOBS_AUTO_LV.containsKey(other.getType())) {
-            if (!(this.EXP > loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1()))) {
-                expOnDeath = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1()) - EXP;
-                this.EXP = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(other.getType()).getInt1());
+
+        if (Util.REGISTERED_MOBS_AUTO_LV.containsKey(EntityType.getId(other.getType()).toString())) {
+            if (!(this.EXP > loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(EntityType.getId(other.getType()).toString()).getLv()))) {
+                expOnDeath = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(EntityType.getId(other.getType()).toString()).getLv()) - EXP;
+                this.EXP = loveToExp(Util.REGISTERED_MOBS_AUTO_LV.get(EntityType.getId(other.getType()).toString()).getLv());
             }
-        } else if (Util.REGISTERED_MOBS_AUTO_EXP.containsKey(other.getType())) {
-            if (!(EXP > Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1())) {
-                expOnDeath = Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1() - EXP;
-                this.EXP = Util.REGISTERED_MOBS_AUTO_EXP.get(other.getType()).getInt1();
+        } else if (Util.REGISTERED_MOBS_AUTO_EXP.containsKey(EntityType.getId(other.getType()).toString())) {
+            if (!(EXP > Util.REGISTERED_MOBS_AUTO_EXP.get(EntityType.getId(other.getType()).toString()).getExp())) {
+                expOnDeath = Util.REGISTERED_MOBS_AUTO_EXP.get(EntityType.getId(other.getType()).toString()).getExp() - EXP;
+                this.EXP = Util.REGISTERED_MOBS_AUTO_EXP.get(EntityType.getId(other.getType()).toString()).getExp();
             }
-        } else if (Util.REGISTERED_MOBS.containsKey(other.getType()))
-            expOnDeath = Util.REGISTERED_MOBS.get(other.getType()).getInt1();
+        } else if (Util.REGISTERED_MOBS.containsKey(EntityType.getId(other.getType()).toString()))
+            expOnDeath = Util.REGISTERED_MOBS.get(EntityType.getId(other.getType()).toString()).getExp();
         else expOnDeath = other.getXpToDrop(this.playerEntity);
-        if (!(Util.REGISTERED_MOBS_AUTO_LV.containsKey(other.getType()) || Util.REGISTERED_MOBS_AUTO_EXP.containsKey(other.getType()))) {
+        if (!(Util.REGISTERED_MOBS_AUTO_LV.containsKey(EntityType.getId(other.getType()).toString()) || Util.REGISTERED_MOBS_AUTO_EXP.containsKey(EntityType.getId(other.getType()).toString()))) {
             this.EXP += expOnDeath;
         }
         this.EXP = MathHelper.clamp(this.EXP, 0, 99999);

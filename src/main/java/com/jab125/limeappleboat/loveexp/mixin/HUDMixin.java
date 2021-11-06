@@ -47,13 +47,6 @@ public abstract class HUDMixin {
 
     @Shadow protected abstract PlayerEntity getCameraPlayer();
 
-    /**
-     * @author Jab125
-     */
-    @Overwrite
-    private int getHeartRows(int heartCount) {
-        return 0;
-    }
     @Inject(at = @At("RETURN"), method = "renderStatusBars")
     private void injectToStatusBars(MatrixStack matrices, CallbackInfo ci) {
         renderStats(matrices, this.getCameraPlayer());

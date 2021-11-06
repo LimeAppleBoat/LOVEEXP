@@ -87,8 +87,8 @@ public class LoveExpIntegration implements LoveExpApi {
         LoveExpApiRegistry.registerMob(EntityType.ZOMBIE_VILLAGER, 35, 3);
 
         // Boss Mobs
-        LoveExpApiRegistry.registerMob(EntityType.WITHER, 665, 0);
-        //LoveExpApiRegistry.registerMobAutoLV(EntityType.WITHER, 15, 99);
+        //LoveExpApiRegistry.registerMob(EntityType.WITHER, 665, 0);
+        LoveExpApiRegistry.registerMobAutoLV(EntityType.WITHER, 15, 99);
         LoveExpApiRegistry.registerMob(EntityType.ENDER_DRAGON, 1031, 0);
 
         // The Unused

@@ -1,25 +1,23 @@
 package com.jab125.limeappleboat.loveexp.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import net.minecraft.entity.Entity;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import net.minecraft.entity.EntityType;
-import org.jetbrains.annotations.Nullable;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Util {
     static HashMap<UUID, Integer> LV = new HashMap<>();
     static HashMap<UUID, Integer> EXP = new HashMap<>();
-    public static HashMap<EntityType, DualInt> REGISTERED_MOBS = new HashMap<>();
-    public static HashMap<EntityType, DualInt> REGISTERED_MOBS_AUTO_LV = new HashMap<>();
-    public static HashMap<EntityType, DualInt> REGISTERED_MOBS_AUTO_EXP = new HashMap<>();
+    public static HashMap<String, LoveExpFormat> REGISTERED_MOBS = new HashMap<>();
+    public static HashMap<String, LoveExpForceLVFormat> REGISTERED_MOBS_AUTO_LV = new HashMap<>();
+    public static HashMap<String, LoveExpForceExpFormat> REGISTERED_MOBS_AUTO_EXP = new HashMap<>();
 //    public static String expJSON = "";
 //
 //    public static void init() {
@@ -46,6 +44,55 @@ public class Util {
 //           // e.printStackTrace();
 //        }
 //    }
+    @SuppressWarnings("unchecked")
+    public static void loadMobs(File directory) {
+        try {
+            File LMR = new File(directory, "loveexp_mob_registry.json");
+            if (LMR.createNewFile()) {
+                String valueToWrite = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(REGISTERED_MOBS);
+                System.out.println(valueToWrite);
+                FileWriter fileWriter = new FileWriter(LMR);
+                fileWriter.write(valueToWrite);
+                fileWriter.close();
+            } else {
+                String fileContents = IOUtils.toString(LMR.toURI(), StandardCharsets.UTF_8);
+                REGISTERED_MOBS = new ObjectMapper().readValue(fileContents, new TypeReference<Map<String, LoveExpFormat>>(){});
+                System.out.println(fileContents);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } try {
+            File LMR = new File(directory, "loveexp_mob_registry_force_lv.json");
+            if (LMR.createNewFile()) {
+                String valueToWrite = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(REGISTERED_MOBS_AUTO_LV);
+                System.out.println(valueToWrite);
+                FileWriter fileWriter = new FileWriter(LMR);
+                fileWriter.write(valueToWrite);
+                fileWriter.close();
+            } else {
+                String fileContents = IOUtils.toString(LMR.toURI(), StandardCharsets.UTF_8);
+                REGISTERED_MOBS_AUTO_LV = new ObjectMapper().readValue(fileContents, new TypeReference<Map<String, LoveExpForceLVFormat>>(){});
+                System.out.println(fileContents);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } try {
+            File LMR = new File(directory, "loveexp_mob_registry_force_exp.json");
+            if (LMR.createNewFile()) {
+                String valueToWrite = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT).writeValueAsString(REGISTERED_MOBS_AUTO_EXP);
+                System.out.println(valueToWrite);
+                FileWriter fileWriter = new FileWriter(LMR);
+                fileWriter.write(valueToWrite);
+                fileWriter.close();
+            } else {
+                String fileContents = IOUtils.toString(LMR.toURI(), StandardCharsets.UTF_8);
+                REGISTERED_MOBS_AUTO_EXP = new ObjectMapper().readValue(fileContents, new TypeReference<Map<String, LoveExpForceExpFormat>>(){});
+                System.out.println(fileContents);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static int loveToHP(int love) {
         return switch (love) {
             case 0, 1 -> 20;
@@ -172,27 +219,6 @@ public class Util {
 
         public void setUuid(UUID uuid) {
             this.uuid = uuid;
-        }
-    }
-    public static class DualInt {
-        private final int int1;
-        private final int int2;
-        public DualInt(int int1, int int2) {
-            this.int1 = int1;
-            this.int2 = int2;
-        }
-
-        public DualInt(int int1) {
-            this.int1 = int1;
-            this.int2 = 0;
-        }
-
-        public int getInt1() {
-            return int1;
-        }
-
-        public int getInt2() {
-            return int2;
         }
     }
 }
