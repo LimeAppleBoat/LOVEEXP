@@ -196,7 +196,47 @@ public class Util {
         return -5;
     }
 
+    public static int loveToDF(int love) {
+        return switch (love) {
+            case 1, 2, 3, 4 -> 0;
+            case 5, 6, 7, 8 -> 1;
+            case 9, 10, 11, 12 -> 2;
+            case 13, 14, 15, 16 -> 3;
+            case 17, 18, 19, 20 -> 4;
+            default -> 0;
+        };
+    }
 
+    public static int loveToAT(int love) {
+        return switch (love) {
+            case 1 -> 0;
+            case 2 -> 2;
+            case 3 -> 4;
+            case 4 -> 6;
+            case 5 -> 8;
+            case 6 -> 10;
+            case 7 -> 12;
+            case 8 -> 14;
+            case 9 -> 16;
+            case 10 -> 18;
+            case 11 -> 20;
+            case 12 -> 22;
+            case 13 -> 24;
+            case 14 -> 26;
+            case 15 -> 28;
+            case 16 -> 30;
+            case 17 -> 32;
+            case 18 -> 34;
+            case 19 -> 36;
+            case 20 -> 38;
+            default -> 0;
+        };
+    }
+
+    /**
+     * @deprecated use a hashmap
+     */
+    @Deprecated
     public static class UUIDInt {
         int anInt;
         UUID uuid;

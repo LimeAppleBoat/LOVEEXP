@@ -1,3 +1,4 @@
 accessWidener   v1  named
 
 accessible    method    net/minecraft/entity/LivingEntity    getXpToDrop    (Lnet/minecraft/entity/player/PlayerEntity;)I
+accessible    field    net/minecraft/item/Item    ATTACK_DAMAGE_MODIFIER_ID    Ljava/util/UUID;

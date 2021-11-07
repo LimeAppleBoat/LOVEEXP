@@ -30,8 +30,6 @@ public abstract class PlayerEntityMixin {
     PlayerEntity playerEntity;
     private int LV;
     private int EXP;
-    private int AT;
-    private int DF;
     private int DISLV = 1;
     private int DISEXP = 0;
 
@@ -44,6 +42,8 @@ public abstract class PlayerEntityMixin {
         if (Util.getLV(playerEntity.getUuid()) != -5) DISLV = Util.getLV(playerEntity.getUuid());
         if (Util.getLV(playerEntity.getUuid()) != -5) DISEXP = Util.getEXP(playerEntity.getUuid());
         Objects.requireNonNull(this.playerEntity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)).setBaseValue(loveToHP(DISLV));
+        Objects.requireNonNull(this.playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)).setBaseValue(loveToAT(DISLV));
+        Objects.requireNonNull(this.playerEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)).setBaseValue(loveToDF(DISLV));
         if (!this.playerEntity.world.isClient) {
             Util.setLV(LV, this.playerEntity.getUuid());
             Util.setEXP(EXP, this.playerEntity.getUuid());
