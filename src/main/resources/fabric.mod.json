@@ -21,6 +21,9 @@
     "main": [
       "com.jab125.limeappleboat.loveexp.LoveExp"
     ],
+    "client": [
+      "com.jab125.limeappleboat.loveexp.client.LoveExpClient"
+    ],
     "loveexp": [
       "com.jab125.limeappleboat.loveexp.util.LoveExpIntegration"
     ]

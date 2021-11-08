@@ -4,11 +4,11 @@
   "package": "com.jab125.limeappleboat.loveexp.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "HUDMixin",
     "PlayerEntityMixin"
   ],
   "client": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "HUDMixin"
   ],
   "injectors": {
     "defaultRequire": 1
