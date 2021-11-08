@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ModStats {
-    public static final Identifier EXP = new Identifier(LoveExp.MODID,"trade_with_goblin");
+    public static final Identifier EXP = new Identifier(LoveExp.MODID,"exp");
     public void registerStats() {
         Registry.register(Registry.CUSTOM_STAT, "exp", EXP);
         Stats.CUSTOM.getOrCreateStat(EXP, StatFormatter.DEFAULT);
