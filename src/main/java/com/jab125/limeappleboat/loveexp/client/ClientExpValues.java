@@ -13,4 +13,5 @@ public class ClientExpValues {
     public static double CLIENT_AT;
     public static double CLIENT_AT_MODIFIER;
     public static double CLIENT_DF;
+    public static double CLIENT_KILLS;
 }

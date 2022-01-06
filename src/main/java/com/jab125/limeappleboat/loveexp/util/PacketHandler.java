@@ -27,7 +27,14 @@ public class PacketHandler {
     public static Identifier AT_MODIFIER_PACKET_ID = new Identifier(LoveExp.MODID, "at_modifier_packet");
     public static Identifier DF_PACKET_ID = new Identifier(LoveExp.MODID, "df_packet");
     public static Identifier CRASH_PACKET_ID = new Identifier(LoveExp.MODID, "crash_packet");
+    public static Identifier KILL_PACKET_ID = new Identifier(LoveExp.MODID, "kill_packet");
 
+    public static void sendKILLS(PlayerEntity playerToSend) {
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeInt(Util.getKILLS((ServerPlayerEntity) playerToSend));
+        ServerPlayNetworking.send((ServerPlayerEntity) playerToSend, KILL_PACKET_ID, buf);
+        //return TypedActionResult.success(Util.getEXP(playerToSend.getUuid()));
+    }
     public static void sendEXP(PlayerEntity playerToSend) {
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeInt(Util.getEXP(playerToSend.getUuid()));

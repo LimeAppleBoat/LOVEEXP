@@ -3,7 +3,9 @@ package com.jab125.limeappleboat.loveexp.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.jab125.limeappleboat.loveexp.ExtendedPlayer;
 import net.minecraft.entity.EntityType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -133,6 +135,9 @@ public class Util {
         };
     }
 
+    public static int getKILLS(ServerPlayerEntity playerEntity) {
+        return ((ExtendedPlayer)playerEntity).getKILLS();
+    }
     public static int loveToAT(int love) {
         return switch (love) {
             case 1 -> 0;

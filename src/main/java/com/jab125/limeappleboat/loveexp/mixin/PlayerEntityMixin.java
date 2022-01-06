@@ -1,7 +1,9 @@
 package com.jab125.limeappleboat.loveexp.mixin;
 
+import com.jab125.limeappleboat.loveexp.ExtendedPlayer;
 import com.jab125.limeappleboat.loveexp.util.PacketHandler;
 import com.jab125.limeappleboat.loveexp.util.Util;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
@@ -27,7 +29,7 @@ import java.util.Objects;
 import static com.jab125.limeappleboat.loveexp.util.Util.*;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin {
+public abstract class PlayerEntityMixin implements ExtendedPlayer {
 
     @Shadow public abstract float getAbsorptionAmount();
 
@@ -37,6 +39,7 @@ public abstract class PlayerEntityMixin {
     private int EXP;
     private int DISLV = 1;
     private int DISEXP = 0;
+    private int KILLS = 0;
 
 
 
@@ -53,6 +56,7 @@ public abstract class PlayerEntityMixin {
             PacketHandler.sendEXP(playerEntity);
             PacketHandler.sendAT(playerEntity);
             PacketHandler.sendATModifiers(playerEntity);
+            PacketHandler.sendKILLS(playerEntity);
         }
         //Util.init();
         //System.out.println(Util.expJSON);
@@ -65,11 +69,15 @@ public abstract class PlayerEntityMixin {
         if (nbt.contains("EXP", 3)) {
             this.EXP = nbt.getInt("EXP");
         }
+        if (nbt.contains("KILLS", 3)) {
+            this.KILLS = nbt.getInt("KILLS");
+        }
     }
     @Inject(at = @At("HEAD"), method = "writeCustomDataToNbt")
     private void injectToWriteNbt(NbtCompound nbt, CallbackInfo ci) {
         nbt.putInt("LV", this.LV);
         nbt.putInt("EXP", this.EXP);
+        nbt.putInt("KILLS", this.KILLS);
     }
 
     @Inject(at = @At("HEAD"), method = "onKilledOther")
@@ -102,6 +110,7 @@ public abstract class PlayerEntityMixin {
                 expOnDeath = 0;
             }
         }
+
             this.EXP = MathHelper.clamp(this.EXP, 0, 99999);
             this.playerEntity.sendMessage(new LiteralText("YOU WON!"), false);
             this.playerEntity.sendMessage(new LiteralText("You earned " + expOnDeath + " XP and " + 0 + " gold."), false);
@@ -129,4 +138,9 @@ public abstract class PlayerEntityMixin {
     }
 
     @Shadow public abstract void setAbsorptionAmount(float absorptionAmount);
+
+    @Override
+    public int getKILLS() {
+        return KILLS;
+    }
 }

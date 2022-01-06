@@ -4,6 +4,7 @@
   "package": "com.jab125.limeappleboat.loveexp.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "InGameHudAccessor",
     "PlayerEntityMixin"
   ],
   "client": [
